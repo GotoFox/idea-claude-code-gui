@@ -98,7 +98,7 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
 
         private final JPanel mainPanel;
         private final ClaudeSDKBridge claudeSDKBridge;
-        private final CodexSDKBridge codexSDKBridge;
+        private final CodexCLIBridge codexCLIBridge;
         private final Project project;
         private final CodemossSettingsService settingsService;
         private final HtmlLoader htmlLoader;
@@ -127,7 +127,7 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
         public ClaudeChatWindow(Project project) {
             this.project = project;
             this.claudeSDKBridge = new ClaudeSDKBridge();
-            this.codexSDKBridge = new CodexSDKBridge();
+            this.codexCLIBridge = new CodexCLIBridge();
             this.settingsService = new CodemossSettingsService();
             this.htmlLoader = new HtmlLoader(getClass());
             this.mainPanel = new JPanel(new BorderLayout());
@@ -176,7 +176,7 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
         }
 
         private void initializeSession() {
-            this.session = new ClaudeSession(project, claudeSDKBridge, codexSDKBridge);
+            this.session = new ClaudeSession(project, claudeSDKBridge, codexCLIBridge);
             loadPermissionModeFromSettings();
         }
 
@@ -186,9 +186,8 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
                 String savedNodePath = props.getValue(NODE_PATH_PROPERTY_KEY);
                 if (savedNodePath != null && !savedNodePath.trim().isEmpty()) {
                     String path = savedNodePath.trim();
-                    // 同时设置 Claude 和 Codex 的 Node.js 路径
+                    // 设置 Claude 的 Node.js 路径（Codex 使用 CLI，不需要 Node.js）
                     claudeSDKBridge.setNodeExecutable(path);
-                    codexSDKBridge.setNodeExecutable(path);
                     LOG.info("Using manually configured Node.js path: " + path);
                 }
             } catch (Exception e) {
@@ -251,7 +250,7 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
                 }
             };
 
-            this.handlerContext = new HandlerContext(project, claudeSDKBridge, codexSDKBridge, settingsService, jsCallback);
+            this.handlerContext = new HandlerContext(project, claudeSDKBridge, codexCLIBridge, settingsService, jsCallback);
             handlerContext.setSession(session);
 
             this.messageDispatcher = new MessageDispatcher();
@@ -542,15 +541,13 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
 
                 if (manualPath == null || manualPath.isEmpty()) {
                     props.unsetValue(NODE_PATH_PROPERTY_KEY);
-                    // 同时清除 Claude 和 Codex 的手动配置
+                    // 清除 Claude 的手动配置（Codex 使用 CLI，不需要 Node.js）
                     claudeSDKBridge.setNodeExecutable(null);
-                    codexSDKBridge.setNodeExecutable(null);
                     LOG.info("Cleared manual Node.js path");
                 } else {
                     props.setValue(NODE_PATH_PROPERTY_KEY, manualPath);
-                    // 同时设置 Claude 和 Codex 的 Node.js 路径
+                    // 设置 Claude 的 Node.js 路径（Codex 使用 CLI，不需要 Node.js）
                     claudeSDKBridge.setNodeExecutable(manualPath);
-                    codexSDKBridge.setNodeExecutable(manualPath);
                     LOG.info("Saved manual Node.js path: " + manualPath);
                 }
 
@@ -709,7 +706,7 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
 
             callJavaScript("clearMessages");
 
-            session = new ClaudeSession(project, claudeSDKBridge, codexSDKBridge);
+            session = new ClaudeSession(project, claudeSDKBridge, codexCLIBridge);
 
             // 恢复之前保存的 permission mode
             session.setPermissionMode(previousPermissionMode);
@@ -1005,7 +1002,7 @@ public class ClaudeSDKToolWindow implements ToolWindowFactory, DumbAware {
                 LOG.info("Old session interrupted, creating new session");
 
                 // 创建全新的 Session 对象
-                session = new ClaudeSession(project, claudeSDKBridge, codexSDKBridge);
+                session = new ClaudeSession(project, claudeSDKBridge, codexCLIBridge);
 
                 // 恢复之前保存的 permission mode
                 session.setPermissionMode(previousPermissionMode);

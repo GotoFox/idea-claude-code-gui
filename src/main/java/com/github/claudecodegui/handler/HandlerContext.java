@@ -2,7 +2,7 @@ package com.github.claudecodegui.handler;
 
 import com.github.claudecodegui.ClaudeSDKBridge;
 import com.github.claudecodegui.ClaudeSession;
-import com.github.claudecodegui.CodexSDKBridge;
+import com.github.claudecodegui.CodexCLIBridge;
 import com.github.claudecodegui.CodemossSettingsService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
@@ -18,7 +18,7 @@ public class HandlerContext {
 
     private final Project project;
     private final ClaudeSDKBridge claudeSDKBridge;
-    private final CodexSDKBridge codexSDKBridge;
+    private final CodexCLIBridge codexCLIBridge;
     private final CodemossSettingsService settingsService;
     private final JsCallback jsCallback;
 
@@ -40,13 +40,13 @@ public class HandlerContext {
     public HandlerContext(
             Project project,
             ClaudeSDKBridge claudeSDKBridge,
-            CodexSDKBridge codexSDKBridge,
+            CodexCLIBridge codexCLIBridge,
             CodemossSettingsService settingsService,
             JsCallback jsCallback
     ) {
         this.project = project;
         this.claudeSDKBridge = claudeSDKBridge;
-        this.codexSDKBridge = codexSDKBridge;
+        this.codexCLIBridge = codexCLIBridge;
         this.settingsService = settingsService;
         this.jsCallback = jsCallback;
     }
@@ -60,8 +60,8 @@ public class HandlerContext {
         return claudeSDKBridge;
     }
 
-    public CodexSDKBridge getCodexSDKBridge() {
-        return codexSDKBridge;
+    public CodexCLIBridge getCodexCLIBridge() {
+        return codexCLIBridge;
     }
 
     public CodemossSettingsService getSettingsService() {

@@ -21,6 +21,7 @@ public class SettingsHandler extends BaseMessageHandler {
     private static final Logger LOG = Logger.getInstance(SettingsHandler.class);
 
     private static final String NODE_PATH_PROPERTY_KEY = "claude.code.node.path";
+    private static final String CODEX_CLI_PATH_PROPERTY_KEY = "claude.code.codex.cli.path";
     private static final String PERMISSION_MODE_PROPERTY_KEY = "claude.code.permission.mode";
 
     private static final String[] SUPPORTED_TYPES = {
@@ -30,6 +31,8 @@ public class SettingsHandler extends BaseMessageHandler {
         "set_provider",
         "get_node_path",
         "set_node_path",
+        "get_codex_cli_path",
+        "set_codex_cli_path",
         "get_usage_statistics",
         "get_working_directory",
         "set_working_directory"
@@ -71,6 +74,12 @@ public class SettingsHandler extends BaseMessageHandler {
                 return true;
             case "set_node_path":
                 handleSetNodePath(content);
+                return true;
+            case "get_codex_cli_path":
+                handleGetCodexCliPath();
+                return true;
+            case "set_codex_cli_path":
+                handleSetCodexCliPath(content);
                 return true;
             case "get_usage_statistics":
                 handleGetUsageStatistics(content);
@@ -318,6 +327,8 @@ public class SettingsHandler extends BaseMessageHandler {
      * 处理设置提供商请求
      */
     private void handleSetProvider(String content) {
+        LOG.info("[SettingsHandler] ========== handleSetProvider START ==========");
+        LOG.info("[SettingsHandler] Received content: " + content);
         try {
             String provider = content;
             if (content != null && !content.isEmpty()) {
@@ -329,6 +340,7 @@ public class SettingsHandler extends BaseMessageHandler {
                     }
                 } catch (Exception e) {
                     // content 本身就是 provider
+                    LOG.info("[SettingsHandler] Content is not JSON, treating as plain string");
                 }
             }
 
@@ -337,10 +349,14 @@ public class SettingsHandler extends BaseMessageHandler {
 
             if (context.getSession() != null) {
                 context.getSession().setProvider(provider);
+                LOG.info("[SettingsHandler] Provider set on session: " + provider);
+            } else {
+                LOG.warn("[SettingsHandler] Session is null, cannot set provider");
             }
         } catch (Exception e) {
             LOG.error("[SettingsHandler] Failed to set provider: " + e.getMessage(), e);
         }
+        LOG.info("[SettingsHandler] ========== handleSetProvider END ==========");
     }
 
     /**
@@ -388,17 +404,15 @@ public class SettingsHandler extends BaseMessageHandler {
             String effectivePath;
             if (path == null || path.isEmpty()) {
                 props.unsetValue(NODE_PATH_PROPERTY_KEY);
-                // 同时清除 Claude 和 Codex 的手动配置
+                // 清除 Claude 的手动配置（Codex 使用 CLI，不需要 Node.js）
                 context.getClaudeSDKBridge().setNodeExecutable(null);
-                context.getCodexSDKBridge().setNodeExecutable(null);
                 LOG.info("[SettingsHandler] Cleared manual Node.js path from settings");
                 String detected = context.getClaudeSDKBridge().getNodeExecutable();
                 effectivePath = detected != null ? detected : "";
             } else {
                 props.setValue(NODE_PATH_PROPERTY_KEY, path);
-                // 同时设置 Claude 和 Codex 的 Node.js 路径
+                // 设置 Claude 的 Node.js 路径（Codex 使用 CLI，不需要 Node.js）
                 context.getClaudeSDKBridge().setNodeExecutable(path);
-                context.getCodexSDKBridge().setNodeExecutable(path);
                 LOG.info("[SettingsHandler] Updated manual Node.js path from settings: " + path);
                 effectivePath = path;
             }
@@ -688,5 +702,80 @@ public class SettingsHandler extends BaseMessageHandler {
         // 如果没有容量后缀，尝试从预定义映射中查找
         // 先尝试完整匹配，如果不存在则使用默认值
         return MODEL_CONTEXT_LIMITS.getOrDefault(model, 200_000);
+    }
+
+    /**
+     * 获取 Codex CLI 路径
+     */
+    private void handleGetCodexCliPath() {
+        try {
+            PropertiesComponent props = PropertiesComponent.getInstance();
+            String savedPath = props.getValue(CODEX_CLI_PATH_PROPERTY_KEY, "");
+
+            // 如果有保存的路径，使用保存的路径；否则尝试自动检测
+            String effectivePath = savedPath;
+            if (effectivePath.isEmpty()) {
+                String detected = context.getCodexCLIBridge().detectCodexPath();
+                effectivePath = detected != null ? detected : "codex";
+            }
+
+            LOG.info("[SettingsHandler] Get Codex CLI path: " + effectivePath);
+            final String finalPath = effectivePath;
+            ApplicationManager.getApplication().invokeLater(() -> {
+                callJavaScript("window.updateCodexCliPath", escapeJs(finalPath));
+            });
+        } catch (Exception e) {
+            LOG.error("[SettingsHandler] Failed to get Codex CLI path: " + e.getMessage(), e);
+            ApplicationManager.getApplication().invokeLater(() -> {
+                callJavaScript("window.updateCodexCliPath", escapeJs("codex"));
+            });
+        }
+    }
+
+    /**
+     * 设置 Codex CLI 路径
+     */
+    private void handleSetCodexCliPath(String content) {
+        LOG.debug("[SettingsHandler] ========== handleSetCodexCliPath START ==========");
+        LOG.debug("[SettingsHandler] Received content: " + content);
+        try {
+            Gson gson = new Gson();
+            JsonObject json = gson.fromJson(content, JsonObject.class);
+            String path = null;
+            if (json != null && json.has("path") && !json.get("path").isJsonNull()) {
+                path = json.get("path").getAsString();
+            }
+
+            if (path != null) {
+                path = path.trim();
+            }
+
+            PropertiesComponent props = PropertiesComponent.getInstance();
+            String effectivePath;
+            if (path == null || path.isEmpty()) {
+                props.unsetValue(CODEX_CLI_PATH_PROPERTY_KEY);
+                context.getCodexCLIBridge().setCodexExecutable("codex");
+                LOG.info("[SettingsHandler] Cleared manual Codex CLI path, using default 'codex'");
+                String detected = context.getCodexCLIBridge().detectCodexPath();
+                effectivePath = detected != null ? detected : "codex";
+            } else {
+                props.setValue(CODEX_CLI_PATH_PROPERTY_KEY, path);
+                context.getCodexCLIBridge().setCodexExecutable(path);
+                LOG.info("[SettingsHandler] Updated manual Codex CLI path: " + path);
+                effectivePath = path;
+            }
+
+            final String finalPath = effectivePath != null ? effectivePath : "codex";
+            ApplicationManager.getApplication().invokeLater(() -> {
+                callJavaScript("window.updateCodexCliPath", escapeJs(finalPath));
+                callJavaScript("window.showSwitchSuccess", escapeJs("Codex CLI 路径已保存。\n\n如果环境检查仍然失败，请确认 Codex CLI 已正确安装并可执行。"));
+            });
+        } catch (Exception e) {
+            LOG.error("[SettingsHandler] Failed to set Codex CLI path: " + e.getMessage(), e);
+            ApplicationManager.getApplication().invokeLater(() -> {
+                callJavaScript("window.showError", escapeJs("保存 Codex CLI 路径失败: " + e.getMessage()));
+            });
+        }
+        LOG.debug("[SettingsHandler] ========== handleSetCodexCliPath END ==========");
     }
 }

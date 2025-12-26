@@ -274,7 +274,7 @@ export interface ProviderInfo {
  */
 export const AVAILABLE_PROVIDERS: ProviderInfo[] = [
   { id: 'claude', label: 'Claude Code', icon: 'codicon-terminal', enabled: true },
-  { id: 'codex', label: 'Codex Cli', icon: 'codicon-terminal', enabled: false },
+  { id: 'codex', label: 'Codex Cli', icon: 'codicon-terminal', enabled: true },
   { id: 'gemini', label: 'Gemini Cli', icon: 'codicon-terminal', enabled: false },
 ];
 

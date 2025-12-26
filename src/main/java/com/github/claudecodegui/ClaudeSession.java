@@ -50,7 +50,7 @@ public class ClaudeSession {
 
     // SDK 桥接
     private final ClaudeSDKBridge claudeSDKBridge;
-    private final CodexSDKBridge codexSDKBridge;
+    private final CodexCLIBridge codexCLIBridge;
 
     // 权限管理
     private final PermissionManager permissionManager = new PermissionManager();
@@ -106,10 +106,10 @@ public class ClaudeSession {
 
     private SessionCallback callback;
 
-    public ClaudeSession(Project project, ClaudeSDKBridge claudeSDKBridge, CodexSDKBridge codexSDKBridge) {
+    public ClaudeSession(Project project, ClaudeSDKBridge claudeSDKBridge, CodexCLIBridge codexCLIBridge) {
         this.project = project;
         this.claudeSDKBridge = claudeSDKBridge;
-        this.codexSDKBridge = codexSDKBridge;
+        this.codexCLIBridge = codexCLIBridge;
 
         // 设置权限管理器回调
         permissionManager.setOnPermissionRequestedCallback(request -> {
@@ -206,7 +206,7 @@ public class ClaudeSession {
                 // 根据 provider 选择 SDK
                 JsonObject result;
                 if ("codex".equals(provider)) {
-                    result = codexSDKBridge.launchChannel(channelId, sessionId, cwd);
+                    result = codexCLIBridge.launchChannel(channelId, sessionId, cwd);
                 } else {
                     result = claudeSDKBridge.launchChannel(channelId, sessionId, cwd);
                 }
@@ -261,6 +261,8 @@ public class ClaudeSession {
     public CompletableFuture<Void> send(String input, List<Attachment> attachments) {
         // long sendStartTime = System.currentTimeMillis();
         // LOG.info("[PERF][" + sendStartTime + "] ClaudeSession.send() 开始执行");
+
+        LOG.info("[ClaudeSession] send() called with provider=" + provider + ", model=" + model);
 
         // 规范化用户文本
         String normalizedInput = (input != null) ? input.trim() : "";
@@ -420,7 +422,8 @@ public class ClaudeSession {
             // 根据 provider 选择 SDK
             CompletableFuture<Void> sendFuture;
             if ("codex".equals(provider)) {
-                sendFuture = codexSDKBridge.sendMessage(
+                LOG.info("[ClaudeSession] Using Codex CLI provider");
+                sendFuture = codexCLIBridge.sendMessage(
                     chId,
                     normalizedInput,
                     sessionId,  // 传递当前 sessionId
@@ -428,7 +431,7 @@ public class ClaudeSession {
                     attachments,
                     permissionMode, // 传递权限模式
                     model,      // 传递模型
-                    new CodexSDKBridge.MessageCallback() {
+                    new CodexCLIBridge.MessageCallback() {
                     private final StringBuilder assistantContent = new StringBuilder();
                     private Message currentAssistantMessage = null;
 
@@ -466,7 +469,7 @@ public class ClaudeSession {
                     }
 
                     @Override
-                    public void onComplete(CodexSDKBridge.SDKResult result) {
+                    public void onComplete(CodexCLIBridge.CLIResult result) {
                         busy = false;
                         loading = false;
                         lastModifiedTime = System.currentTimeMillis();
@@ -718,7 +721,7 @@ public class ClaudeSession {
         return CompletableFuture.runAsync(() -> {
             try {
                 if ("codex".equals(provider)) {
-                    codexSDKBridge.interruptChannel(channelId);
+                    codexCLIBridge.interruptChannel(channelId);
                 } else {
                     claudeSDKBridge.interruptChannel(channelId);
                 }
@@ -760,7 +763,7 @@ public class ClaudeSession {
                 LOG.info("Loading session from server: sessionId=" + sessionId + ", cwd=" + cwd);
                 List<JsonObject> serverMessages;
                 if ("codex".equals(provider)) {
-                    serverMessages = codexSDKBridge.getSessionMessages(sessionId, cwd);
+                    serverMessages = codexCLIBridge.getSessionMessages(sessionId, cwd);
                 } else {
                     serverMessages = claudeSDKBridge.getSessionMessages(sessionId, cwd);
                 }

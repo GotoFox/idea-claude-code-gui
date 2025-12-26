@@ -2,24 +2,23 @@
 
 /**
  * AI Bridge Channel Manager
- * 统一的 Claude 和 Codex SDK 桥接入口
+ * Claude SDK 桥接入口
  *
  * 命令格式:
  *   node channel-manager.js <provider> <command> [args...]
  *
  * Provider:
  *   claude - Claude Agent SDK (@anthropic-ai/claude-agent-sdk)
- *   codex  - Codex SDK (@openai/codex-sdk)
  *
  * Commands:
  *   send                - 发送消息（参数通过 stdin JSON 传递）
- *   sendWithAttachments - 发送带附件的消息（仅 claude）
- *   getSession          - 获取会话历史消息（仅 claude）
+ *   sendWithAttachments - 发送带附件的消息
+ *   getSession          - 获取会话历史消息
  *
  * 设计说明：
- * - 统一入口，根据 provider 参数分发到不同的服务
- * - sessionId/threadId 由调用方（Java）维护
+ * - sessionId 由调用方（Java）维护
  * - 消息和其他参数通过 stdin 以 JSON 格式传递
+ * - Codex 现在使用 CLI 方式直接调用，不再需要 Node.js 桥接
  */
 
 // 共用工具
@@ -32,9 +31,6 @@ import {
   getSlashCommands as claudeGetSlashCommands
 } from './services/claude/message-service.js';
 import { getSessionMessages as claudeGetSessionMessages } from './services/claude/session-service.js';
-
-// Codex 服务 (暂时禁用 - SDK 已卸载)
-// import { sendMessage as codexSendMessage } from './services/codex/message-service.js';
 
 // 命令行参数解析
 const provider = process.argv[2];
@@ -108,19 +104,12 @@ async function handleClaudeCommand(command, args, stdinData) {
   }
 }
 
-/**
- * Codex 命令处理 (暂时禁用 - SDK 已卸载)
- */
-async function handleCodexCommand(command, args, stdinData) {
-  throw new Error('Codex support is temporarily disabled. SDK not installed.');
-}
-
 // 执行命令
 (async () => {
   try {
     // 验证 provider
-    if (!provider || !['claude', 'codex'].includes(provider)) {
-      console.error('Invalid provider. Use "claude" or "codex"');
+    if (!provider || provider !== 'claude') {
+      console.error('Invalid provider. Use "claude"');
       console.log(JSON.stringify({
         success: false,
         error: 'Invalid provider: ' + provider
@@ -141,12 +130,8 @@ async function handleCodexCommand(command, args, stdinData) {
     // 读取 stdin 数据
     const stdinData = await readStdinData(provider);
 
-    // 根据 provider 分发
-    if (provider === 'claude') {
-      await handleClaudeCommand(command, args, stdinData);
-    } else if (provider === 'codex') {
-      await handleCodexCommand(command, args, stdinData);
-    }
+    // 处理 Claude 命令
+    await handleClaudeCommand(command, args, stdinData);
 
   } catch (error) {
     console.error('[COMMAND_ERROR]', error.message);
