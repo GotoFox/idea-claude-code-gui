@@ -16,6 +16,7 @@ import ProviderManageSection from './ProviderManageSection';
 import UsageSection from './UsageSection';
 import PlaceholderSection from './PlaceholderSection';
 import CommunitySection from './CommunitySection';
+import EnhancePromptSection from './EnhancePromptSection';
 import { SkillsSettingsSection } from '../skills';
 
 import styles from './style.module.less';
@@ -178,6 +179,17 @@ const SettingsView = ({ onClose }: SettingsViewProps) => {
               prev.map((p) => ({ ...p, isActive: p.id === activeProvider.id }))
           );
           syncActiveProviderModelMapping(activeProvider);
+
+          // 确保增强提示词功能使用最新的供应商配置
+          if (activeProvider.settingsConfig && activeProvider.settingsConfig.env) {
+            const env = activeProvider.settingsConfig.env as Record<string, any>;
+            const apiConfig = {
+              apiKey: env.ANTHROPIC_AUTH_TOKEN || env.ANTHROPIC_API_KEY || '',
+              baseUrl: env.ANTHROPIC_BASE_URL || '',
+              model: env.ANTHROPIC_MODEL || '',
+            };
+            localStorage.setItem('active-provider-api-config', JSON.stringify(apiConfig));
+          }
         }
       } catch (error) {
         console.error('[SettingsView] Failed to parse active provider:', error);
@@ -506,6 +518,9 @@ const SettingsView = ({ onClose }: SettingsViewProps) => {
 
           {/* 使用统计 */}
           {currentTab === 'usage' && <UsageSection />}
+
+          {/* 增强提示词 */}
+          {currentTab === 'enhancePrompt' && <EnhancePromptSection />}
 
           {/* MCP服务器 */}
           {currentTab === 'mcp' && <PlaceholderSection type="mcp" />}

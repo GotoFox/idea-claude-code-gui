@@ -1,4 +1,5 @@
 import React, { useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getFileIcon } from '../../utils/fileIcons';
 import { TokenIndicator } from './TokenIndicator';
 
@@ -11,18 +12,29 @@ interface ContextBarProps {
   showUsage?: boolean;
   onClearFile?: () => void;
   onAddAttachment?: (files: FileList) => void;
+  isEnhancing?: boolean;
+  hasContent?: boolean;
+  isLoading?: boolean;
+  enhanceEnabled?: boolean;
+  onEnhancePrompt?: () => void;
 }
 
-export const ContextBar: React.FC<ContextBarProps> = ({ 
-  activeFile, 
+export const ContextBar: React.FC<ContextBarProps> = ({
+  activeFile,
   selectedLines,
   percentage = 0,
   usedTokens,
   maxTokens,
   showUsage = true,
   onClearFile,
-  onAddAttachment
+  onAddAttachment,
+  isEnhancing = false,
+  hasContent = false,
+  isLoading = false,
+  enhanceEnabled = false,
+  onEnhancePrompt
 }) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAttachClick = useCallback((e: React.MouseEvent) => {
@@ -57,12 +69,18 @@ export const ContextBar: React.FC<ContextBarProps> = ({
     selectedLines ? `${activeFile}#${selectedLines}` : activeFile
   ) : '';
 
+  const handleEnhanceClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onEnhancePrompt?.();
+  }, [onEnhancePrompt]);
+
   return (
     <div className="context-bar">
       {/* Tool Icons Group */}
       <div className="context-tools">
-        <div 
-          className="context-tool-btn" 
+        <div
+          className="context-tool-btn"
           onClick={handleAttachClick}
           title="Add attachment"
         >
@@ -80,7 +98,7 @@ export const ContextBar: React.FC<ContextBarProps> = ({
             />
           </div>
         )}
-        
+
         {/* Hidden file input */}
         <input
           ref={fileInputRef}
@@ -90,23 +108,23 @@ export const ContextBar: React.FC<ContextBarProps> = ({
           onChange={handleFileChange}
           style={{ display: 'none' }}
         />
-        
+
         <div className="context-tool-divider" />
       </div>
 
       {/* Active Context Chip */}
       {displayText && (
-        <div 
-          className="context-item has-tooltip" 
+        <div
+          className="context-item has-tooltip"
           data-tooltip={fullDisplayText}
           style={{ cursor: 'default' }}
         >
           {activeFile && (
-            <span 
-              className="context-file-icon" 
-              style={{ 
-                marginRight: 4, 
-                display: 'inline-flex', 
+            <span
+              className="context-file-icon"
+              style={{
+                marginRight: 4,
+                display: 'inline-flex',
                 alignItems: 'center',
                 width: 16,
                 height: 16
@@ -117,11 +135,29 @@ export const ContextBar: React.FC<ContextBarProps> = ({
           <span className="context-text">
             <span dir="ltr">{displayText}</span>
           </span>
-          <span 
-            className="codicon codicon-close context-close" 
+          <span
+            className="codicon codicon-close context-close"
             onClick={onClearFile}
             title="Remove file context"
           />
+        </div>
+      )}
+
+      {/* Enhance Prompt Button - Right Side */}
+      {enhanceEnabled && (
+        <div className="context-actions">
+          <button
+            className="context-enhance-btn has-tooltip"
+            onClick={handleEnhanceClick}
+            disabled={!hasContent || isLoading || isEnhancing}
+            data-tooltip={t('chat.enhancePrompt')}
+          >
+            {isEnhancing ? (
+              <span className="codicon codicon-loading codicon-modifier-spin" />
+            ) : (
+              <span className="codicon codicon-sparkle" />
+            )}
+          </button>
         </div>
       )}
     </div>

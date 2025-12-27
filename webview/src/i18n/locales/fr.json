@@ -47,7 +47,11 @@
     "imagePreview": "Aperçu",
     "context": "Contexte",
     "usage": "Utilisation",
-    "usagePercentage": "Utilisation: {{percentage}}"
+    "usagePercentage": "Utilisation: {{percentage}}",
+    "enhancePrompt": "Améliorer le prompt",
+    "enhancing": "Amélioration en cours...",
+    "enhanceSuccess": "Prompt amélioré avec succès",
+    "enhanceFailed": "Échec de l'amélioration: {{error}}"
   },
   "settings": {
     "title": "Paramètres",
@@ -86,6 +90,25 @@
         "level5": "Grande (120%)",
         "level6": "Maximale (140%)"
       }
+    },
+    "enhancePrompt": {
+      "title": "Améliorer le prompt",
+      "description": "Utiliser l'IA pour optimiser et améliorer automatiquement vos prompts pour de meilleures réponses",
+      "enable": "Activer la fonctionnalité",
+      "enableDesc": "Activer la fonctionnalité d'amélioration de prompt",
+      "template": "Modèle d'amélioration",
+      "templatePlaceholder": "Generate an enhanced version of this prompt (reply with only the enhanced prompt - no conversation, explanations, lead-in, bullet points, placeholders, or surrounding quotes):\n\n${userInput}",
+      "providerAndModel": "Configuration du fournisseur et du modèle",
+      "providerMode": "Sélection du fournisseur",
+      "useCurrentProvider": "Utiliser le fournisseur actif actuel",
+      "useSpecificProvider": "Utiliser un fournisseur spécifique",
+      "selectProvider": "Veuillez sélectionner un fournisseur",
+      "modelMode": "Sélection du modèle",
+      "useCurrentModel": "Utiliser le modèle actuel",
+      "useSpecificModel": "Utiliser un modèle spécifique",
+      "modelPlaceholder": "Entrez le nom du modèle",
+      "customModel": "Modèle personnalisé",
+      "templateHint": "Utilisez ${userInput} comme espace réservé pour l'entrée utilisateur. Ce modèle sera envoyé à l'IA pour améliorer votre prompt."
     },
     "providers": "Gestion des fournisseurs",
     "providersDesc": "Gérer la configuration des fournisseurs d'API Claude, basculer entre différents fournisseurs de services API",

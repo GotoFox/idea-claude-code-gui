@@ -374,6 +374,82 @@
   color: var(--text-primary);
 }
 
+/* 右侧操作按钮区域 */
+.context-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.context-enhance-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.context-enhance-btn:hover:not(:disabled) {
+  background: var(--button-hover);
+  color: var(--button-primary);
+}
+
+.context-enhance-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* Tooltip for enhance button */
+.context-enhance-btn.has-tooltip {
+  position: relative;
+}
+
+.context-enhance-btn.has-tooltip:hover:not(:disabled)::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+
+  background: var(--dropdown-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--dropdown-border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  opacity: 0;
+  animation: tooltip-fade-in 0.2s forwards;
+}
+
+.context-enhance-btn.has-tooltip:hover:not(:disabled)::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 2px;
+  border: 6px solid transparent;
+  border-top-color: var(--dropdown-border);
+  z-index: 1000;
+  opacity: 0;
+  animation: tooltip-fade-in 0.2s forwards;
+}
+
 /* ============================================================
    输入区域
    ============================================================ */

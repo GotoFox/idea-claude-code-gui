@@ -47,7 +47,11 @@
     "imagePreview": "預覽",
     "context": "上下文",
     "usage": "上下文",
-    "usagePercentage": "上下文: {{percentage}}"
+    "usagePercentage": "上下文: {{percentage}}",
+    "enhancePrompt": "增強提示詞",
+    "enhancing": "正在增強...",
+    "enhanceSuccess": "提示詞增強成功",
+    "enhanceFailed": "增強失敗: {{error}}"
   },
   "settings": {
     "title": "設定",
@@ -86,6 +90,25 @@
         "level5": "大（120%）",
         "level6": "最大（140%）"
       }
+    },
+    "enhancePrompt": {
+      "title": "增強提示詞",
+      "description": "使用AI自動優化和增強您的提示詞，獲得更好的回覆效果",
+      "enable": "功能開關",
+      "enableDesc": "啟用增強提示詞功能",
+      "template": "增強模板",
+      "templatePlaceholder": "Generate an enhanced version of this prompt (reply with only the enhanced prompt - no conversation, explanations, lead-in, bullet points, placeholders, or surrounding quotes):\n\n${userInput}",
+      "providerAndModel": "供應商和模型配置",
+      "providerMode": "供應商選擇",
+      "useCurrentProvider": "使用當前啟用的供應商",
+      "useSpecificProvider": "使用指定供應商",
+      "selectProvider": "請選擇供應商",
+      "modelMode": "模型選擇",
+      "useCurrentModel": "使用當前模型",
+      "useSpecificModel": "使用指定模型",
+      "modelPlaceholder": "請輸入模型名稱",
+      "customModel": "自訂模型",
+      "templateHint": "使用 ${userInput} 作為使用者輸入的佔位符。此模板將發送給 AI 來增強您的提示詞。"
     },
     "providers": "供應商管理",
     "providersDesc": "管理 Claude API 供應商配置，切換不同的 API 服務提供商",

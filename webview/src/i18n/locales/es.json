@@ -47,7 +47,11 @@
     "imagePreview": "Vista previa",
     "context": "Contexto",
     "usage": "Uso",
-    "usagePercentage": "Uso: {{percentage}}"
+    "usagePercentage": "Uso: {{percentage}}",
+    "enhancePrompt": "Mejorar prompt",
+    "enhancing": "Mejorando...",
+    "enhanceSuccess": "Prompt mejorado exitosamente",
+    "enhanceFailed": "Fallo en la mejora: {{error}}"
   },
   "settings": {
     "title": "Configuración",
@@ -86,6 +90,25 @@
         "level5": "Grande (120%)",
         "level6": "Máximo (140%)"
       }
+    },
+    "enhancePrompt": {
+      "title": "Mejorar prompt",
+      "description": "Usar IA para optimizar y mejorar automáticamente sus prompts para obtener mejores respuestas",
+      "enable": "Activar función",
+      "enableDesc": "Activar función de mejora de prompt",
+      "template": "Plantilla de mejora",
+      "templatePlaceholder": "Generate an enhanced version of this prompt (reply with only the enhanced prompt - no conversation, explanations, lead-in, bullet points, placeholders, or surrounding quotes):\n\n${userInput}",
+      "providerAndModel": "Configuración de proveedor y modelo",
+      "providerMode": "Selección de proveedor",
+      "useCurrentProvider": "Usar proveedor activo actual",
+      "useSpecificProvider": "Usar proveedor específico",
+      "selectProvider": "Por favor seleccione un proveedor",
+      "modelMode": "Selección de modelo",
+      "useCurrentModel": "Usar modelo actual",
+      "useSpecificModel": "Usar modelo específico",
+      "modelPlaceholder": "Ingrese el nombre del modelo",
+      "customModel": "Modelo personalizado",
+      "templateHint": "Use ${userInput} como marcador de posición para la entrada del usuario. Esta plantilla se enviará a la IA para mejorar su prompt."
     },
     "providers": "Gestión de proveedores",
     "providersDesc": "Gestionar configuración de proveedores de API Claude, cambiar entre diferentes proveedores de servicio API",

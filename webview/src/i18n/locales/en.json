@@ -47,7 +47,11 @@
     "imagePreview": "Preview",
     "context": "Context",
     "usage": "Usage",
-    "usagePercentage": "Usage: {{percentage}}"
+    "usagePercentage": "Usage: {{percentage}}",
+    "enhancePrompt": "Enhance Prompt",
+    "enhancing": "Enhancing...",
+    "enhanceSuccess": "Prompt enhanced successfully",
+    "enhanceFailed": "Enhancement failed: {{error}}"
   },
   "settings": {
     "title": "Settings",
@@ -91,6 +95,25 @@
         "level5": "Large (120%)",
         "level6": "Largest (140%)"
       }
+    },
+    "enhancePrompt": {
+      "title": "Enhance Prompt",
+      "description": "Use AI to automatically optimize and enhance your prompts for better responses",
+      "enable": "Feature Toggle",
+      "enableDesc": "Enable prompt enhancement feature",
+      "template": "Enhancement Template",
+      "templatePlaceholder": "Generate an enhanced version of this prompt (reply with only the enhanced prompt - no conversation, explanations, lead-in, bullet points, placeholders, or surrounding quotes):\n\n${userInput}",
+      "providerAndModel": "Provider and Model Configuration",
+      "providerMode": "Provider Selection",
+      "useCurrentProvider": "Use current active provider",
+      "useSpecificProvider": "Use specific provider",
+      "selectProvider": "Please select a provider",
+      "modelMode": "Model Selection",
+      "useCurrentModel": "Use current model",
+      "useSpecificModel": "Use specific model",
+      "modelPlaceholder": "Enter model name",
+      "customModel": "Custom Model",
+      "templateHint": "Use ${userInput} as placeholder for user input. This template will be sent to AI to enhance your prompt."
     },
     "providers": "Provider Management",
     "providersDesc": "Manage Claude API provider configurations and switch between different API service providers",

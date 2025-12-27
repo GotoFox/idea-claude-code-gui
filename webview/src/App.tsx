@@ -114,6 +114,7 @@ const App = () => {
     if (!provider || !provider.settingsConfig || !provider.settingsConfig.env) {
       try {
         window.localStorage.removeItem('claude-model-mapping');
+        window.localStorage.removeItem('active-provider-api-config');
       } catch {
       }
       return;
@@ -132,7 +133,16 @@ const App = () => {
       } else {
         window.localStorage.removeItem('claude-model-mapping');
       }
-    } catch {
+
+      // 同时保存 API 配置供增强提示词功能使用
+      const apiConfig = {
+        apiKey: env.ANTHROPIC_AUTH_TOKEN || env.ANTHROPIC_API_KEY || '',
+        baseUrl: env.ANTHROPIC_BASE_URL || '',
+        model: env.ANTHROPIC_MODEL || '',
+      };
+      window.localStorage.setItem('active-provider-api-config', JSON.stringify(apiConfig));
+    } catch (error) {
+      console.error('[App] Failed to save API config:', error);
     }
   };
 

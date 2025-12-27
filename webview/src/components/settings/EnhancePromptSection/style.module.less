@@ -1,0 +1,227 @@
+.configSection {
+  max-width: 800px;
+  padding-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.sectionDesc {
+  color: var(--text-tertiary);
+  margin: 0 0 24px 0;
+  font-size: 13px;
+}
+
+.fieldHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+
+  .codicon {
+    font-size: 16px;
+    color: var(--accent-primary);
+  }
+}
+
+.fieldLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.enhanceEnableWrapper {
+  margin-bottom: 24px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+  }
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.providerModelSection {
+  margin-top: 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.optionGroup {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.optionLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.optionControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+  }
+
+  input[type="radio"] {
+    cursor: pointer;
+  }
+}
+
+.selectInput, .textInput {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 13px;
+  margin-top: 8px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--text-placeholder);
+  }
+}
+
+.modelInputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .textInput {
+    margin-top: 0;
+  }
+}
+
+.templateSection {
+  margin-top: 24px;
+}
+
+.templateTextarea {
+  width: 100%;
+  max-width: 700px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  resize: vertical;
+  min-height: 160px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--text-placeholder);
+  }
+}
+
+.formHint {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+
+  .codicon {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  code {
+    background: var(--color-code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 11px;
+  }
+}
+
+/* 响应式适配 */
+@media (max-width: 480px) {
+  .sectionTitle {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .sectionDesc {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .templateTextarea {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .formHint {
+    font-size: 11px;
+  }
+}

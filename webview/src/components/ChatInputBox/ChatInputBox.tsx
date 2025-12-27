@@ -8,6 +8,7 @@ import { useCompletionDropdown, useTriggerDetection } from './hooks';
 import { commandToDropdownItem, fileReferenceProvider, fileToDropdownItem, slashCommandProvider, } from './providers';
 import { getFileIcon } from '../../utils/fileIcons';
 import { icon_folder } from '../../utils/icons';
+import { enhancePrompt, getEnhancePromptConfig } from '../../utils/enhancePrompt';
 import './styles.css';
 
 // 防抖函数工具
@@ -56,6 +57,30 @@ export const ChatInputBox = ({
   // 内部附件状态（如果外部未提供）
   const [internalAttachments, setInternalAttachments] = useState<Attachment[]>([]);
   const attachments = externalAttachments ?? internalAttachments;
+
+  // 增强提示词状态
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [enhanceEnabled, setEnhanceEnabled] = useState(false);
+
+  // 监听增强功能配置变化
+  useEffect(() => {
+    const checkEnhanceConfig = () => {
+      const config = getEnhancePromptConfig();
+      setEnhanceEnabled(config.enabled);
+    };
+
+    checkEnhanceConfig();
+
+    // 监听 localStorage 变化
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'enhance-prompt-config') {
+        checkEnhanceConfig();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // 输入框引用和状态
   const containerRef = useRef<HTMLDivElement>(null);
@@ -621,6 +646,53 @@ export const ChatInputBox = ({
     fileCompletion,
     commandCompletion,
   ]);
+
+  /**
+   * 处理增强提示词
+   */
+  const handleEnhancePrompt = useCallback(async () => {
+    const content = getTextContent().trim();
+
+    if (!content) {
+      return;
+    }
+
+    if (isEnhancing || isLoading) {
+      return;
+    }
+
+    setIsEnhancing(true);
+
+    try {
+      // 调用增强API（会自动从当前激活的供应商配置中读取 API 配置）
+      const enhanced = await enhancePrompt(content);
+
+      // 更新输入框内容
+      if (editableRef.current) {
+        editableRef.current.textContent = enhanced;
+
+        // 触发状态更新
+        const newText = getTextContent();
+        setHasContent(!!newText.trim());
+        adjustHeight();
+        onInput?.(newText);
+
+        // 渲染文件标签
+        setTimeout(() => {
+          renderFileTags();
+        }, 50);
+      }
+
+      // 可选:显示成功提示
+      console.log('[ChatInputBox] Prompt enhanced successfully');
+    } catch (error: any) {
+      console.error('[ChatInputBox] Failed to enhance prompt:', error);
+      // 可以通过 toast/notification 显示错误给用户
+      alert(`增强失败: ${error.message || '未知错误'}`);
+    } finally {
+      setIsEnhancing(false);
+    }
+  }, [getTextContent, isEnhancing, isLoading, adjustHeight, onInput, renderFileTags]);
 
   /**
    * 处理 Mac 风格的光标移动、文本选择和删除操作
@@ -1496,6 +1568,11 @@ export const ChatInputBox = ({
         showUsage={showUsage}
         onClearFile={onClearContext}
         onAddAttachment={handleAddAttachment}
+        isEnhancing={isEnhancing}
+        hasContent={hasContent}
+        isLoading={isLoading}
+        enhanceEnabled={enhanceEnabled}
+        onEnhancePrompt={handleEnhancePrompt}
       />
 
       {/* 输入区域 */}

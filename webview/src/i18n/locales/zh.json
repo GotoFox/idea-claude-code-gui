@@ -47,7 +47,11 @@
     "imagePreview": "预览",
     "context": "上下文",
     "usage": "上下文",
-    "usagePercentage": "上下文: {{percentage}}"
+    "usagePercentage": "上下文: {{percentage}}",
+    "enhancePrompt": "增强提示词",
+    "enhancing": "正在增强...",
+    "enhanceSuccess": "提示词增强成功",
+    "enhanceFailed": "增强失败: {{error}}"
   },
   "settings": {
     "title": "设置",
@@ -91,6 +95,25 @@
         "level5": "大（120%）",
         "level6": "最大（140%）"
       }
+    },
+    "enhancePrompt": {
+      "title": "增强提示词",
+      "description": "使用AI自动优化和增强您的提示词，获得更好的回复效果",
+      "enable": "功能开关",
+      "enableDesc": "启用增强提示词功能",
+      "template": "增强模板",
+      "templatePlaceholder": "Generate an enhanced version of this prompt (reply with only the enhanced prompt - no conversation, explanations, lead-in, bullet points, placeholders, or surrounding quotes):\n\n${userInput}",
+      "providerAndModel": "供应商和模型配置",
+      "providerMode": "供应商选择",
+      "useCurrentProvider": "使用当前激活的供应商",
+      "useSpecificProvider": "使用指定供应商",
+      "selectProvider": "请选择供应商",
+      "modelMode": "模型选择",
+      "useCurrentModel": "使用当前模型",
+      "useSpecificModel": "使用指定模型",
+      "modelPlaceholder": "请输入模型名称",
+      "customModel": "自定义模型",
+      "templateHint": "使用 ${userInput} 作为用户输入的占位符。此模板将发送给 AI 来增强您的提示词。"
     },
     "providers": "供应商管理",
     "providersDesc": "管理 Claude API 供应商配置，切换不同的 API 服务提供商",

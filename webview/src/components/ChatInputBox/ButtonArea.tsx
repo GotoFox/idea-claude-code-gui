@@ -127,8 +127,6 @@ export const ButtonArea = ({
 
       {/* 右侧:工具按钮 */}
       <div className="button-area-right">
-        <div className="button-divider" />
-
         {/* 发送/停止按钮 */}
         {isLoading ? (
           <button

@@ -47,7 +47,11 @@
     "imagePreview": "पूर्वावलोकन",
     "context": "संदर्भ",
     "usage": "उपयोग",
-    "usagePercentage": "उपयोग: {{percentage}}"
+    "usagePercentage": "उपयोग: {{percentage}}",
+    "enhancePrompt": "प्रॉम्प्ट बेहतर करें",
+    "enhancing": "बेहतर बना रहे हैं...",
+    "enhanceSuccess": "प्रॉम्प्ट सफलतापूर्वक बेहतर बनाया गया",
+    "enhanceFailed": "बेहतर बनाना विफल: {{error}}"
   },
   "settings": {
     "title": "सेटिंग्स",
@@ -86,6 +90,25 @@
         "level5": "अधिक बड़ा (120%)",
         "level6": "सबसे बड़ा (140%)"
       }
+    },
+    "enhancePrompt": {
+      "title": "प्रॉम्प्ट बेहतर करें",
+      "description": "बेहतर प्रतिक्रियाओं के लिए अपने प्रॉम्प्ट को स्वचालित रूप से अनुकूलित और बेहतर बनाने के लिए AI का उपयोग करें",
+      "enable": "सुविधा सक्षम करें",
+      "enableDesc": "प्रॉम्प्ट बेहतर बनाने की सुविधा सक्षम करें",
+      "template": "बेहतर बनाने का टेम्पलेट",
+      "templatePlaceholder": "Generate an enhanced version of this prompt (reply with only the enhanced prompt - no conversation, explanations, lead-in, bullet points, placeholders, or surrounding quotes):\n\n${userInput}",
+      "providerAndModel": "प्रदाता और मॉडल कॉन्फ़िगरेशन",
+      "providerMode": "प्रदाता चयन",
+      "useCurrentProvider": "वर्तमान सक्रिय प्रदाता का उपयोग करें",
+      "useSpecificProvider": "विशिष्ट प्रदाता का उपयोग करें",
+      "selectProvider": "कृपया एक प्रदाता चुनें",
+      "modelMode": "मॉडल चयन",
+      "useCurrentModel": "वर्तमान मॉडल का उपयोग करें",
+      "useSpecificModel": "विशिष्ट मॉडल का उपयोग करें",
+      "modelPlaceholder": "मॉडल का नाम दर्ज करें",
+      "customModel": "कस्टम मॉडल",
+      "templateHint": "उपयोगकर्ता इनपुट के लिए प्लेसहोल्डर के रूप में ${userInput} का उपयोग करें। यह टेम्पलेट आपके प्रॉम्प्ट को बेहतर बनाने के लिए AI को भेजा जाएगा।"
     },
     "providers": "प्रदाता प्रबंधन",
     "providersDesc": "Claude API प्रदाता कॉन्फ़िगरेशन प्रबंधित करें, विभिन्न API सेवा प्रदाताओं के बीच स्विच करें",
